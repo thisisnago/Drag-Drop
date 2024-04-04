@@ -15,19 +15,19 @@ function validate(validatableInput) {
         isValid = isValid && validatableInput.value.toString().trim().length !== 0;
         console.log(`${validatableInput.value} required`);
     }
-    if (validatableInput.minLength != null && typeof validatableInput.value === 'string') {
+    if (validatableInput.minLength != null && typeof validatableInput.value === "string") {
         isValid = isValid && validatableInput.value.length >= validatableInput.minLength;
         console.log(`${validatableInput.value} minLength`);
     }
-    if (validatableInput.maxLength != null && typeof validatableInput.value === 'string') {
+    if (validatableInput.maxLength != null && typeof validatableInput.value === "string") {
         isValid = isValid && validatableInput.value.length <= validatableInput.maxLength;
         console.log(`${validatableInput.value} maxLength`);
     }
-    if (validatableInput.min != null && typeof validatableInput.value === 'number') {
+    if (validatableInput.min != null && typeof validatableInput.value === "number") {
         isValid = isValid && validatableInput.value >= validatableInput.min;
         console.log(`${validatableInput.value} min`);
     }
-    if (validatableInput.max != null && typeof validatableInput.value === 'number') {
+    if (validatableInput.max != null && typeof validatableInput.value === "number") {
         isValid = isValid && validatableInput.value <= validatableInput.max;
         console.log(`${validatableInput.value} max`);
     }
@@ -44,6 +44,27 @@ function autobind(target, methodName, descriptor) {
         },
     };
     return adjDescriptor;
+}
+// ProjectList Class
+class ProjectList {
+    constructor(type) {
+        this.type = type;
+        this.templateElement = document.querySelector("#project-list");
+        this.hostElement = document.querySelector("#app");
+        const importedNode = document.importNode(this.templateElement.content, true);
+        this.element = importedNode.firstElementChild;
+        this.element.id = `${this.type}-projects`;
+        this.attach();
+        this.renderContent();
+    }
+    renderContent() {
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector('ul').id = listId;
+        this.element.querySelector('h2').textContent = this.type.toUpperCase() + " PROJECTS";
+    }
+    attach() {
+        this.hostElement.insertAdjacentElement('beforeend', this.element);
+    }
 }
 // ProjectInput Class
 class ProjectInput {
@@ -65,31 +86,31 @@ class ProjectInput {
         const enteredPeople = this.peopleInputElement.value;
         const titleValidatable = {
             value: enteredTitle,
-            required: true
+            required: true,
         };
         const descriptionValidatable = {
             value: enteredDescription,
             required: true,
-            minLength: 5
+            minLength: 5,
         };
         const peopleValidatable = {
             value: +enteredPeople,
             required: true,
-            min: 1
+            min: 1,
         };
         if (!validate(titleValidatable) ||
             !validate(descriptionValidatable) ||
             !validate(peopleValidatable)) {
-            alert('Invalid input, please try again!');
+            alert("Invalid input, please try again!");
         }
         else {
             return [enteredTitle, enteredDescription, +enteredPeople];
         }
     }
     clearInputs() {
-        this.titleInputElement.value = '';
-        this.descriptionInputElement.value = '';
-        this.peopleInputElement.value = '';
+        this.titleInputElement.value = "";
+        this.descriptionInputElement.value = "";
+        this.peopleInputElement.value = "";
     }
     submitHandler(event) {
         event.preventDefault();
@@ -112,4 +133,6 @@ __decorate([
     autobind
 ], ProjectInput.prototype, "submitHandler", null);
 const prjInput = new ProjectInput();
+const activePrjList = new ProjectList("active");
+const finishedPrjList = new ProjectList("finished");
 //# sourceMappingURL=app.js.map
