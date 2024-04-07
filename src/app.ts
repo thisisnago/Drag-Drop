@@ -26,17 +26,15 @@ class Project {
     ) {}
 }
 
-
 // Project State Management
 type Listener<T> = (items: T[]) => void;
 
 class State<T> {
     protected listeners: Listener<T>[] = [];
-    
+
     addListener(listenerFn: Listener<T>) {
         this.listeners.push(listenerFn);
     }
-
 }
 
 class ProjectState extends State<Project> {
@@ -65,7 +63,18 @@ class ProjectState extends State<Project> {
             ProjectStatus.Active
         );
         this.projects.push(newProject);
+        this.updateListeners();
+    }
 
+    moveProject(projectId: string, newStatus: ProjectStatus) {
+        const project = this.projects.find((prj) => prj.id === projectId);
+        if (project && project.status !== newStatus) {
+            project.status = newStatus;
+            this.updateListeners();
+        }
+    }
+
+    private updateListeners() {
         for (const listenerFn of this.listeners) {
             listenerFn(this.projects.slice());
         }
@@ -169,14 +178,14 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 
     get persons() {
         if (this.project.people === 1) {
-            return '1 person';
+            return "1 person";
         } else {
             return `${this.project.people} persons`;
         }
     }
 
     constructor(hostId: string, project: Project) {
-        super('single-project', hostId, false, project.id);
+        super("single-project", hostId, false, project.id);
         this.project = project;
 
         this.configure();
@@ -185,24 +194,24 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 
     @autobind
     dragStartHandler(event: DragEvent): void {
-        event.dataTransfer!.setData('text/plain', this.project.id);
-        event.dataTransfer!.effectAllowed = 'move';
+        event.dataTransfer!.setData("text/plain", this.project.id);
+        event.dataTransfer!.effectAllowed = "move";
     }
 
     dragEndHandler(_: DragEvent): void {
-        console.log('DragEnd');
+        console.log("DragEnd");
     }
 
     @autobind
     configure() {
-        this.element.addEventListener('dragstart', this.dragStartHandler);
-        this.element.addEventListener('dragend', this.dragEndHandler);
+        this.element.addEventListener("dragstart", this.dragStartHandler);
+        this.element.addEventListener("dragend", this.dragEndHandler);
     }
 
     renderContent() {
-        this.element.querySelector('h2')!.textContent = this.project.title;
-        this.element.querySelector('h3')!.textContent = this.persons + ' assigned';
-        this.element.querySelector('p')!.textContent = this.project.description;
+        this.element.querySelector("h2")!.textContent = this.project.title;
+        this.element.querySelector("h3")!.textContent = this.persons + " assigned";
+        this.element.querySelector("p")!.textContent = this.project.description;
     }
 }
 
@@ -219,27 +228,32 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
 
     @autobind
     dragOverHandler(event: DragEvent) {
-        if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+        if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
             event.preventDefault();
-            const listEl = this.element.querySelector('ul')!;
+            const listEl = this.element.querySelector("ul")!;
             listEl.classList.add("droppable");
         }
-    } 
-    
-    dropHandler(event: DragEvent) {
-        console.log(event.dataTransfer!.getData('text/plain'));
     }
-    
+
+    @autobind
+    dropHandler(event: DragEvent) {
+        const prjId = event.dataTransfer!.getData("text/plain");
+        projectState.moveProject(
+            prjId,
+            this.type === "active" ? ProjectStatus.Active : ProjectStatus.Finished
+        );
+    }
+
     @autobind
     dragLeaveHandler(event: DragEvent) {
-        const listEl = this.element.querySelector('ul')!;
-        listEl.classList.remove("droppable");    
+        const listEl = this.element.querySelector("ul")!;
+        listEl.classList.remove("droppable");
     }
 
     configure() {
-        this.element.addEventListener('dragover', this.dragOverHandler);
-        this.element.addEventListener('dragleave', this.dragLeaveHandler);
-        this.element.addEventListener('drop', this.dropHandler);
+        this.element.addEventListener("dragover", this.dragOverHandler);
+        this.element.addEventListener("dragleave", this.dragLeaveHandler);
+        this.element.addEventListener("drop", this.dropHandler);
         projectState.addListener((projects: Project[]) => {
             const relevantProjects = projects.filter((prj) => {
                 if (this.type === "active") {
@@ -260,11 +274,11 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
 
     private renderProjects() {
         const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
-        listEl.innerHTML = '';
+        listEl.innerHTML = "";
         for (const prjItem of this.assignedProjects) {
             console.log("UL");
             console.log(this.element);
-            new ProjectItem(this.element.querySelector('ul')!.id, prjItem);
+            new ProjectItem(this.element.querySelector("ul")!.id, prjItem);
         }
     }
 }
@@ -286,7 +300,6 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
         this.configure();
     }
 
-    
     configure() {
         this.element.addEventListener("submit", this.submitHandler);
     }
@@ -343,7 +356,6 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
             this.clearInputs();
         }
     }
-
 }
 
 const prjInput = new ProjectInput();
