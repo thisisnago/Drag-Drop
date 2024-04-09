@@ -1,75 +1,61 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 import { Component } from "./base-item.js";
 // import * as Validation from "../utils/validation.js";
-import { Validatable, validate } from "../utils/validation.js";
+import { validate } from "../utils/validation.js";
 // import { autobind as Autobind } from "../decorators/autobind.js";
 import { autobind } from "../decorators/autobind.js";
 import { projectState } from "../state/project-state.js";
-
-
 // ProjectInput Class
-export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
-    titleInputElement: HTMLInputElement;
-    descriptionInputElement: HTMLInputElement;
-    peopleInputElement: HTMLInputElement;
-
+export class ProjectInput extends Component {
     constructor() {
         super("project-input", "app", true, "user-input");
-
-        this.titleInputElement = <HTMLInputElement>this.element.querySelector("#title")!;
-        this.descriptionInputElement = <HTMLInputElement>(
-            this.element.querySelector("#description")!
-        );
-        this.peopleInputElement = <HTMLInputElement>this.element.querySelector("#people")!;
+        this.titleInputElement = this.element.querySelector("#title");
+        this.descriptionInputElement = (this.element.querySelector("#description"));
+        this.peopleInputElement = this.element.querySelector("#people");
         this.configure();
     }
-
     configure() {
         this.element.addEventListener("submit", this.submitHandler);
     }
-
-    renderContent() {}
-
-    private gatherUserInput(): [string, string, number] | void {
+    renderContent() { }
+    gatherUserInput() {
         const enteredTitle = this.titleInputElement.value;
         const enteredDescription = this.descriptionInputElement.value;
         const enteredPeople = this.peopleInputElement.value;
-
-        const titleValidatable: Validatable = {
+        const titleValidatable = {
             value: enteredTitle,
             required: true,
         };
-
-        const descriptionValidatable: Validatable = {
+        const descriptionValidatable = {
             value: enteredDescription,
             required: true,
             minLength: 5,
         };
-
-        const peopleValidatable: Validatable = {
+        const peopleValidatable = {
             value: +enteredPeople,
             required: true,
             min: 1,
         };
-
-        if (
-            !validate(titleValidatable) ||
+        if (!validate(titleValidatable) ||
             !validate(descriptionValidatable) ||
-            !validate(peopleValidatable)
-        ) {
+            !validate(peopleValidatable)) {
             alert("Invalid input, please try again!");
-        } else {
+        }
+        else {
             return [enteredTitle, enteredDescription, +enteredPeople];
         }
     }
-
-    private clearInputs() {
+    clearInputs() {
         this.titleInputElement.value = "";
         this.descriptionInputElement.value = "";
         this.peopleInputElement.value = "";
     }
-
-    @autobind
-    private submitHandler(event: Event) {
+    submitHandler(event) {
         event.preventDefault();
         event.stopPropagation();
         const userInput = this.gatherUserInput();
@@ -80,3 +66,7 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
         }
     }
 }
+__decorate([
+    autobind
+], ProjectInput.prototype, "submitHandler", null);
+//# sourceMappingURL=project-input.js.map
