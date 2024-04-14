@@ -1,7 +1,5 @@
 import { Component } from "./base-item";
-// import * as Validation from "../utils/validation.js";
 import { Validatable, validate } from "../utils/validation";
-// import { autobind as Autobind } from "../decorators/autobind.js";
 import { autobind } from "../decorators/autobind";
 import { projectState } from "../state/project-state";
 
