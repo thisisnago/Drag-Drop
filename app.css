@@ -44,6 +44,12 @@
     color: white;
     padding: 0.75rem 1rem;
   }
+
+  @media (max-width: 480px) {
+    button {
+      width: 100%;
+    }
+  }
   
   button:focus {
     outline: none;
