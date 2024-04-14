@@ -57,11 +57,11 @@
   
   .projects {
     margin: 1rem;
-    border: 1px solid #ff0062;
+    border: 1px solid #3db700;
   }
   
   .projects header {
-    background: #ff0062;
+    background: #3db700;
     height: 3.5rem;
     display: flex;
     justify-content: center;
@@ -69,11 +69,11 @@
   }
   
   #finished-projects {
-    border-color: #0044ff;
+    border-color: #cb0202;
   }
   
   #finished-projects header {
-    background: #0044ff;
+    background: #cb0202;
   }
   
   .projects h2 {
