@@ -119,11 +119,11 @@
   }
   
   .droppable {
-    background: #ffe3ee;
+    background: #3db70023;
   }
   
   #finished-projects .droppable {
-    background: #d6e1ff;
+    background: #cb020222;
   }
   
   #user-input {
